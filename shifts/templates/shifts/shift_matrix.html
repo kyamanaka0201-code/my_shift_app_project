@@ -1,0 +1,252 @@
+{% load my_filters %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>シフトマトリックス</title>
+<style>
+body {
+    font-family: 'Hiragino Kaku Gothic Pro', 'メイリオ', sans-serif;
+    background-color: #fff4e6;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    background-color: #ffa94d;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.header .month-buttons button {
+    background-color: #ffd8a8;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin: 0 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.header .month-buttons button:hover {
+    background-color: #ffc078;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 5px;
+    width: 100%;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    background-color: #fff8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+th {
+    background-color: #ffa94d;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* 名前と役職の横並び */
+.name-role {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    min-width: 150px; /* 名前セルの最小幅 */
+    flex-direction: column;
+    text-align: left;
+}
+
+.name-role .role {
+    font-size: 0.85em;
+    color: #666;
+}
+
+/* 1か月勤務時間 */
+.name-role .work-hours {
+    font-size: 0.85em;
+    color: #333;
+}
+
+/* シフト時間ごとの色分け */
+td.shift-early { background-color: #ffd8a8; }
+td.shift-mid { background-color: #ffe5b4; }
+td.shift-late { background-color: #ffc078; }
+td.shift-holiday { background-color: #ffece6; color: #9c6644; }
+.weekend { background-color: #ffd6a5 !important; }
+
+button#auto-generate {
+    background-color: #ffa94d;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+button#auto-generate:hover {
+    background-color: #ff922b;
+}
+
+/* ドロップダウン全体 */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-right: 15px; /* タイトルとの間隔 */
+}
+
+/* ボタンの見た目 */
+.dropbtn {
+  background-color: #ffa94d;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dropbtn:hover {
+  background-color: #ff922b;
+}
+
+/* メニューの中身（最初は非表示） */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 8px;
+}
+
+/* メニューのリンク */
+.dropdown-content a {
+  color: black;
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+}
+
+/* ホバー時 */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* ボタンにマウスを乗せたらメニュー表示 */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* 出勤人数用のヘッダー */
+th.attendance {
+    background-color: #ffe5b4;
+    color: #444;
+    font-weight: bold;
+    padding: 6px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="dropdown">
+        <button class="dropbtn">出力　▼</button>
+        <div class="dropdown-content">
+            <a href="{% url 'shifts:export_excel' %}?year={{ year }}&month={{ month }}">Excelで出力</a>
+            <a href="{% url 'shifts:export_csv' %}?year={{ year }}&month={{ month }}">CSVで出力</a>
+        </div>
+    </div>
+
+    <h2>{{ year }}年{{ month }}月のシフト</h2>
+    <div class="month-buttons">
+        <a href="?year={{ prev_year }}&month={{ prev_month }}"><button>&lt; 前月</button></a>
+        <a href="?year={{ next_year }}&month={{ next_month }}"><button>次月 &gt;</button></a>
+    </div>
+</div>
+
+<form method="post" action="{% url 'shifts:shift_matrix' %}" style="display: inline-block; margin-right: 10px;">
+    {% csrf_token %}
+    <input type="hidden" name="year" value="{{ year }}">
+    <input type="hidden" name="month" value="{{ month }}">
+    <button type="submit" name="auto_generate" value="1" id="auto-generate" class="btn btn-primary">
+        シフト自動作成
+    </button>
+</form>
+
+    <a href="{% url 'shifts:salary_view' %}?year={{ year }}&month={{ month }}" class="btn"
+       style="background-color:#ffa94d; color:white; padding:10px 20px; border-radius:12px; font-weight:bold; text-decoration:none; box-shadow:0 2px 4px rgba(0,0,0,0.2); cursor:pointer;">
+    💰 給与グラフを見る
+</a>
+
+
+<table>
+    <thead>
+        <!-- 出勤人数行 -->
+        <tr>
+            <th>人数</th>
+            {% for d in month_days %}
+                {% with count=attendance_counts|get_item:d.date %}
+                <th class="attendance {% if d.is_weekend %}weekend{% endif %}">
+                    {{ count|default:0 }}人
+                </th>
+                {% endwith %}
+            {% endfor %}
+        </tr>
+        <!-- 日付・曜日行 -->
+        <tr>
+            <th>名前</th>
+            {% for d in month_days %}
+                <th class="{% if d.is_weekend %}weekend{% endif %}">
+                    {{ d.date.day }}<br>{{ d.weekday_name }}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+{% for emp in shift_matrix %}
+    <tr>
+        <td>
+            <div class="name-role">
+                <span class="name">{{ emp.name }}</span>
+                <span class="role">({{ emp.role }})</span>
+                <span class="work-hours">{{ emp.work_hours|floatformat:1 }}時間</span>
+            </div>
+        </td>
+        {% for shift in emp.shifts %}
+            <td class="{% if shift.time_range == '9:00-17:00' %}shift-early
+                       {% elif shift.time_range == '11:00-19:00' %}shift-mid
+                       {% elif shift.time_range == '13:00-21:00' %}shift-late
+                       {% else %}shift-holiday{% endif %}">
+                {{ shift.time_range|default:"休" }}
+            </td>
+        {% endfor %}
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+</body>
+</html>
