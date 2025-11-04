@@ -26,7 +26,12 @@ SECRET_KEY = 'django-insecure-r9w@4zj1uc1mde6@my*g4q#l7y(&qga0%77%9zx#tzg)*ci3t-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'my-shift-app-project.onrender.com',
+    '.localhost',
+    '127.0.0.1',
+    '[::1]',
+]
 
 
 # Application definition
@@ -122,3 +127,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
