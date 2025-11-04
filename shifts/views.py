@@ -284,7 +284,6 @@ def salary_view(request):
     # グラフのタイトル・軸ラベル
     plt.title(f"{year}年{month}月の給与", fontsize=14)
     plt.xlabel("金額（円）", fontsize=12)
-    plt.ylabel("従業員", fontsize=12)
     plt.yticks(rotation=0, ha="right")
 
     # 棒の横に給与金額を表示
