@@ -117,7 +117,7 @@ def shift_matrix_view(request):
                     if emp_last_worked[emp.id] and emp_last_worked[emp.id] == d - timedelta(days=1):
                         emp_consecutive[emp.id] = 0
 
-        return redirect(f"{reverse('shifts:shift_matrix')}?year={year}&month={month}")
+        return redirect(f"{reverse('shift_matrix')}?year={year}&month={month}")
 
     # ==============================
     # シフト表作成
