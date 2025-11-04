@@ -238,6 +238,11 @@ def export_csv(request):
 # ✅ 給与グラフ表示
 # =========================
 def salary_view(request):
+    
+    # 日本語フォント設定
+    plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'sans-serif']
+    plt.rcParams['axes.unicode_minus'] = False
+    
     today = date.today()
     year = int(request.GET.get('year', today.year))
     month = int(request.GET.get('month', today.month))
@@ -276,20 +281,19 @@ def salary_view(request):
         names.append(emp.name)
         salaries.append(salary)
 
-    # グラフ描画設定
-    plt.rcParams['font.family'] = 'Meiryo'
+    # グラフ描画
     plt.figure(figsize=(8, 4))
     bars = plt.barh(names, salaries, color="#ffa94d")  # 横棒グラフ
 
-    # グラフのタイトル・軸ラベル
-    plt.title(f"{year}年{month}月の給与", fontsize=14)
-    plt.xlabel("金額（円）", fontsize=12)
-    plt.ylabel("従\n業\n員\n数", rotation=0, labelpad=30, fontsize=12, va='center')
+    # グラフのタイトル・軸ラベル（英語に変更して文字化け回避）
+    plt.title(f"Salary - {year}/{month}", fontsize=14)
+    plt.xlabel("Amount (Yen)", fontsize=12)
+    plt.ylabel("Employees", fontsize=12)
     plt.yticks(rotation=0, ha="right")
 
     # 棒の横に給与金額を表示
     for bar, value in zip(bars, salaries):
-        plt.text(value + 1000, bar.get_y() + bar.get_height()/2, f"{int(value):,}円", va='center', fontsize=10)
+        plt.text(value + 1000, bar.get_y() + bar.get_height()/2, f"{int(value):,}", va='center', fontsize=10)
 
     plt.tight_layout()
     buf = io.BytesIO()  # 一時的なメモリ領域（仮のファイル）を作る
