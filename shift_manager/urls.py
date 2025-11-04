@@ -22,7 +22,7 @@ from django.views.generic import RedirectView
 from shifts import views
 
 urlpatterns = [
-    path('', redirect('shift_matrix'), name='home'), 
+    path('', RedirectView.as_view(pattern_name='shift_matrix'), name='home'), 
     path('shift_matrix/', views.shift_matrix, name='shift_matrix'),
     path('export/excel/', views.export_excel, name='export_excel'),
     path('export/csv/', views.export_csv, name='export_csv'),
