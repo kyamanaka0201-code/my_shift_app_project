@@ -176,8 +176,8 @@ th.attendance {
     <div class="dropdown">
         <button class="dropbtn">出力　▼</button>
         <div class="dropdown-content">
-            <a href="{% url 'shifts:export_excel' %}?year={{ year }}&month={{ month }}">Excelで出力</a>
-            <a href="{% url 'shifts:export_csv' %}?year={{ year }}&month={{ month }}">CSVで出力</a>
+            <a href="{% url 'export_excel' %}?year={{ year }}&month={{ month }}">Excelで出力</a>
+            <a href="{% url 'export_csv' %}?year={{ year }}&month={{ month }}">CSVで出力</a>
         </div>
     </div>
 
@@ -188,7 +188,7 @@ th.attendance {
     </div>
 </div>
 
-<form method="post" action="{% url 'shifts:shift_matrix' %}" style="display: inline-block; margin-right: 10px;">
+<form method="post" action="{% url 'shift_matrix' %}" style="display: inline-block; margin-right: 10px;">
     {% csrf_token %}
     <input type="hidden" name="year" value="{{ year }}">
     <input type="hidden" name="month" value="{{ month }}">
@@ -197,7 +197,7 @@ th.attendance {
     </button>
 </form>
 
-    <a href="{% url 'shifts:salary_view' %}?year={{ year }}&month={{ month }}" class="btn"
+    <a href="{% url 'salary_view' %}?year={{ year }}&month={{ month }}" class="btn"
        style="background-color:#ffa94d; color:white; padding:10px 20px; border-radius:12px; font-weight:bold; text-decoration:none; box-shadow:0 2px 4px rgba(0,0,0,0.2); cursor:pointer;">
     💰 給与グラフを見る
 </a>
