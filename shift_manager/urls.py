@@ -23,7 +23,7 @@ from shifts import views
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='shift_matrix'), name='home'), 
-    path('shift_matrix/', views.shift_matrix, name='shift_matrix'),
+    path('shift_matrix/', views.shift_matrix_view, name='shift_matrix'),
     path('export/excel/', views.export_excel, name='export_excel'),
     path('export/csv/', views.export_csv, name='export_csv'),
     path('salary/', views.salary_view, name='salary_view'),
