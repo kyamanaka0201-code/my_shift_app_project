@@ -281,7 +281,6 @@ def salary_view(request):
 
         plt.title(f"{year}年{month}月の給与", fontsize=14)
         plt.xlabel("金額（円）", fontsize=12)
-        plt.ylabel("従\n業\n員\n数", rotation=0, labelpad=30, fontsize=12, va='center')
         plt.yticks(rotation=0, ha="right")
 
         for bar, value in zip(bars, salaries):
@@ -312,3 +311,4 @@ def salary_view(request):
         "month": month,
         "hourly_rates": hourly_rates,
     })
+
