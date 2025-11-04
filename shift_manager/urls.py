@@ -15,13 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path, include
-from django.views.generic import RedirectView
-from shifts import views 
+
+from django.urls import path
+from . import views
+from django.shortcuts import redirect
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('shifts.urls')),  # すべてのアプリ URL を委譲
-
+    path('', redirect('shift_matrix'), name='home'), 
+    path('shift_matrix/', views.shift_matrix, name='shift_matrix'),
+    path('export/excel/', views.export_excel, name='export_excel'),
+    path('export/csv/', views.export_csv, name='export_csv'),
+    path('salary/', views.salary_view, name='salary_view'),
 ]
